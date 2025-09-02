@@ -529,3 +529,113 @@ db.companies.find().sort({ "salaryBand.base": -1 }).limit(5)
 db.companies.find().sort({ "salaryBand.base": -1 }).skip(5).limit(5)
 ```
 ---
+
+**Q66. Company with maximum base**
+
+```javascript
+db.companies.find().sort({ "salaryBand.base": -1 }).limit(1)
+```
+---
+
+**Q67. Company with minimum CGPA**
+
+```javascript
+db.companies.find().sort({ "hiringCriteria.cgpa": 1 }).limit(1)
+```
+---
+
+**Q68. First 3 alphabetically**
+
+```javascript
+db.companies.find().sort({ name: 1 }).limit(3)
+```
+---
+
+**Q69. Companies with "Technical" round**
+
+```javascript
+db.companies.find({ "interviewRounds.type": "Technical" })
+```
+---
+
+**Q70. Round 2 = "System Design"**
+
+```javascript
+db.companies.find({ "interviewRounds.1.type": "System Design" })
+```
+---
+
+**Q71. InterviewRounds length > 3**
+
+```javascript
+db.companies.find({ "interviewRounds.3": { $exists: true } })
+```
+---
+
+**Q72. Second benefit = "WFH"**
+
+```javascript
+db.companies.find({ "benefits.1": "WFH" })
+```
+---
+
+**Q73. Must have \["DSA", "Java"]**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": { $all: ["DSA", "Java"] } })
+```
+---
+
+**Q74. SalaryBand elemMatch (base > 25 and stock > 5)**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $gt: 25 }, "salaryBand.stock": { $gt: 5 } })
+```
+---
+
+**Q75. Location in \[Hyderabad, Bangalore]**
+
+```javascript
+db.companies.find({ location: { $in: ["Hyderabad", "Bangalore"] } })
+```
+---
+
+**Q76. Location not in \[Mumbai, Pune]**
+
+```javascript
+db.companies.find({ location: { $nin: ["Mumbai", "Pune"] } })
+```
+
+---
+
+**Q77. Base closest to 30**
+
+```javascript
+db.companies.aggregate([
+  { $project: { name: 1, base: "$salaryBand.base", diff: { $abs: { $subtract: ["$salaryBand.base", 30] } } } },
+  { $sort: { diff: 1 } },
+  { $limit: 1 }
+])
+```
+---
+
+**Q78. Exclude salaries < 20**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $not: { $lt: 20 } } })
+```
+---
+
+**Q79. Bonus < base/10**
+
+```javascript
+db.companies.find({ $expr: { $lt: ["$salaryBand.bonus", { $divide: ["$salaryBand.base", 10] }] } })
+```
+---
+
+**Q80. Exactly 2 benefits**
+
+```javascript
+db.companies.find({ benefits: { $size: 2 } })
+```
+---
