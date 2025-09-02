@@ -1,0 +1,350 @@
+# MongoDB Assignment
+
+## Section A. CRUD Basics
+
+**Q1. Insert a new company "Tesla"**
+
+```javascript
+db.companies.insertOne({
+  name: "Tesla",
+  location: "Bangalore",
+  salaryBand: { base: 29, bonus: 4, stock: 6 },
+  hiringCriteria: { cgpa: 7.0, skills: ["DSA", "Python", "Distributed Systems"], experience: "1-2 years" },
+  interviewRounds: [
+    { round: 1, type: "OA" },
+    { round: 2, type: "Technical" },
+    { round: 3, type: "HR" }
+  ],
+  benefits: ["Relocation", "WFH"],
+  headcount: 800
+})
+```
+
+---
+
+**Q2. Insert multiple companies ("Stripe", "Coinbase")**
+
+```javascript
+db.companies.insertMany([
+  { name: "Stripe", location: "Bangalore", salaryBand: { base: 40, bonus: 8, stock: 12 } },
+  { name: "Coinbase", location: "Hyderabad", salaryBand: { base: 38, bonus: 6, stock: 15 } }
+])
+```
+
+---
+
+**Q3. Find all companies**
+
+```javascript
+db.companies.find()
+```
+
+---
+
+**Q4. Find one company in Bangalore**
+
+```javascript
+db.companies.findOne({ location: "Bangalore" })
+```
+
+---
+
+**Q5. Companies with base > 30 LPA**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $gt: 30 } })
+```
+---
+
+
+**Q6. Companies in Hyderabad**
+
+```javascript
+db.companies.find({ location: "Hyderabad" })
+```
+
+---
+
+**Q7. CGPA requirement >= 8.0**
+
+```javascript
+db.companies.find({ "hiringCriteria.cgpa": { $gte: 8.0 } })
+```
+---
+
+**Q8. Companies requiring "System Design"**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": "System Design" })
+```
+---
+
+**Q9. Companies offering "Relocation"**
+
+```javascript
+db.companies.find({ benefits: "Relocation" })
+```
+---
+
+**Q10. Companies with stock >= 15**
+
+```javascript
+db.companies.find({ "salaryBand.stock": { $gte: 15 } })
+```
+---
+
+**Q11. At least 4 interview rounds**
+
+```javascript
+db.companies.find({ "interviewRounds.3": { $exists: true } })
+```
+---
+
+**Q12. Headcount > 5000**
+
+```javascript
+db.companies.find({ headcount: { $gt: 5000 } })
+```
+---
+
+**Q13. Insert company with only `name`, `location`**
+
+```javascript
+db.companies.insertOne({ name: "Ridhamco.", location: "Ahmedabad" })
+```
+---
+
+**Q14. Update Amazon’s bonus to 6**
+
+```javascript
+db.companies.updateOne(
+  { name: "Amazon" },
+  { $set: { "salaryBand.bonus": 6 } }
+)
+```
+---
+
+**Q15. Add "Free Snacks" to all Hyderabad companies**
+
+```javascript
+db.companies.updateMany(
+  { location: "Hyderabad" },
+  { $addToSet: { benefits: "Free Snacks" } }
+)
+```
+---
+
+**Q16. Add skill "Python" to Google**
+
+```javascript
+db.companies.updateOne(
+  { name: "Google" },
+  { $addToSet: { "hiringCriteria.skills": "Python" } }
+)
+```
+
+---
+
+**Q17. Remove "Gym" from Microsoft**
+
+```javascript
+db.companies.updateOne(
+  { name: "Microsoft" },
+  { $pull: { benefits: "Gym" } }
+)
+```
+---
+
+**Q18. Replace salaryBand for Netflix**
+
+```javascript
+db.companies.updateOne(
+  { name: "Netflix" },
+  { $set: { salaryBand: { base: 40, bonus: 8, stock: 20 } } }
+)
+```
+---
+
+**Q19. Delete Infosys**
+
+```javascript
+db.companies.deleteOne({ name: "Infosys" })
+```
+---
+
+**Q20. Delete all companies base < 10**
+
+```javascript
+db.companies.deleteMany({ "salaryBand.base": { $lt: 10 } })
+```
+---
+
+**Q21. Add field isTopTier to Google**
+
+```javascript
+db.companies.updateOne(
+  { name: "Google" },
+  { $set: { isTopTier: true } }
+)
+```
+---
+
+**Q22. Increase Amazon’s stock by 2**
+
+```javascript
+db.companies.updateOne(
+  { name: "Amazon" },
+  { $inc: { "salaryBand.stock": 2 } }
+)
+```
+---
+
+**Q23. Rename headcount → employeeCount**
+
+```javascript
+db.companies.updateMany({}, { $rename: { headcount: "employeeCount" } })
+```
+---
+
+**Q24. Remove bonus from salaryBand**
+
+```javascript
+db.companies.updateMany({}, { $unset: { "salaryBand.bonus": "" } })
+```
+---
+
+**Q25. Insert 5 dummy companies**
+
+```javascript
+db.companies.insertMany([
+  { name: "Dummy1", location: "TestCity" },
+  { name: "Dummy2", location: "TestCity" },
+  { name: "Dummy3", location: "TestCity" },
+  { name: "Dummy4", location: "TestCity" },
+  { name: "Dummy5", location: "TestCity" }
+])
+```
+---
+
+**Q26. Delete all dummy companies**
+
+```javascript
+db.companies.deleteMany({ name: { $regex: /^Dummy/ } })
+```
+---
+
+**Q27. Project only name & salaryBand**
+
+```javascript
+db.companies.find({}, { name: 1, salaryBand: 1 })
+```
+---
+
+**Q28. Exclude `_id`**
+
+```javascript
+db.companies.find({}, { _id: 0, name: 1, location: 1 })
+```
+---
+
+**Q29. Microsoft name + benefits only**
+
+```javascript
+db.companies.find({ name: "Microsoft" }, { name: 1, benefits: 1 })
+```
+---
+
+**Q30. Count Bangalore companies**
+
+```javascript
+db.companies.countDocuments({ location: "Bangalore" })
+```
+---
+
+**Q31. Count CGPA >= 7.0**
+
+```javascript
+db.companies.countDocuments({ "hiringCriteria.cgpa": { $gte: 7.0 } })
+```
+---
+
+**Q32. Distinct locations**
+
+```javascript
+db.companies.distinct("location")
+```
+---
+
+**Q33. Distinct benefits**
+
+```javascript
+db.companies.distinct("benefits")
+```
+---
+
+**Q34. Any company stock = 20**
+
+```javascript
+db.companies.findOne({ "salaryBand.stock": 20 })
+```
+---
+
+**Q35. Insert nested perks**
+
+```javascript
+db.companies.updateOne(
+  { name: "Swiggy" },
+  { $set: { perks: { transport: true } } }
+)
+```
+---
+
+**Q36. Push new round in Meta**
+
+```javascript
+db.companies.updateOne(
+  { name: "Meta" },
+  { $push: { interviewRounds: { round: 5, type: "CTO Interview" } } }
+)
+```
+---
+
+**Q37. Remove "HR" round from Amazon**
+
+```javascript
+db.companies.updateOne(
+  { name: "Amazon" },
+  { $pull: { interviewRounds: { type: "HR" } } }
+)
+```
+---
+
+**Q38. Add "Health Insurance" if not exists in Swiggy**
+
+```javascript
+db.companies.updateOne(
+  { name: "Swiggy" },
+  { $addToSet: { benefits: "Health Insurance" } }
+)
+```
+---
+
+**Q39. Increase base salary by 2 for Bangalore companies**
+
+```javascript
+db.companies.updateMany(
+  { location: "Bangalore" },
+  { $inc: { "salaryBand.base": 2 } }
+)
+```
+---
+
+**Q40. Delete Delhi companies**
+
+```javascript
+db.companies.deleteMany({ location: "Delhi" })
+```
+---
+---
+
+
