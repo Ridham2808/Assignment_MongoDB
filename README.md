@@ -459,3 +459,73 @@ db.companies.find({ "hiringCriteria.skills": { $regex: /Design$/ } })
 ```
 ---
 
+**Q56. Companies starting with "A"**
+
+```javascript
+db.companies.find({ name: { $regex: /^A/ } })
+```
+---
+
+**Q57. Case-insensitive search "amazon"**
+
+```javascript
+db.companies.find({ name: { $regex: /^amazon$/i } })
+```
+---
+
+**Q58. Where stock field exists**
+
+```javascript
+db.companies.find({ "salaryBand.stock": { $exists: true } })
+```
+---
+
+**Q59. Where perks field does NOT exist**
+
+```javascript
+db.companies.find({ perks: { $exists: false } })
+```
+---
+
+**Q60. Salary base must be a number**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $type: "number" } })
+```
+---
+
+**Q61. Sort base ascending**
+
+```javascript
+db.companies.find().sort({ "salaryBand.base": 1 })
+```
+---
+
+**Q62. Sort base descending**
+
+```javascript
+db.companies.find().sort({ "salaryBand.base": -1 })
+```
+---
+
+**Q63. Sort by bonus then stock**
+
+```javascript
+db.companies.find().sort({ "salaryBand.bonus": 1, "salaryBand.stock": 1 })
+```
+
+---
+
+**Q64. Limit to top 5 highest base**
+
+```javascript
+db.companies.find().sort({ "salaryBand.base": -1 }).limit(5)
+```
+---
+
+**Q65. Skip first 5 and return next 5**
+
+```javascript
+db.companies.find().sort({ "salaryBand.base": -1 }).skip(5).limit(5)
+```
+---
