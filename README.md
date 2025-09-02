@@ -347,4 +347,115 @@ db.companies.deleteMany({ location: "Delhi" })
 ---
 ---
 
+## Section B. Advanced Queries
+
+**Q41. Companies with base between 25–35**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $gte: 25, $lte: 35 } })
+```
+---
+
+**Q42. Companies with stock < 10**
+
+```javascript
+db.companies.find({ "salaryBand.stock": { $lt: 10 } })
+```
+---
+
+**Q43. Bonus > 5 AND stock > 10**
+
+```javascript
+db.companies.find({ "salaryBand.bonus": { $gt: 5 }, "salaryBand.stock": { $gt: 10 } })
+```
+---
+
+**Q44. Base >= 30 OR stock >= 12**
+
+```javascript
+db.companies.find({
+  $or: [
+    { "salaryBand.base": { $gte: 30 } },
+    { "salaryBand.stock": { $gte: 12 } }
+  ]
+})
+```
+---
+
+**Q45. Companies NOT requiring "OS"**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": { $ne: "OS" } })
+```
+---
+
+**Q46. At least one skill from \["Java", "C++"]**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": { $in: ["Java", "C++"] } })
+```
+---
+
+**Q47. Must require BOTH "DSA" and "System Design"**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": { $all: ["DSA", "System Design"] } })
+```
+---
+
+**Q48. Companies not offering WFH**
+
+```javascript
+db.companies.find({ benefits: { $ne: "WFH" } })
+```
+---
+
+**Q49. Companies with >3 benefits**
+
+```javascript
+db.companies.find({ benefits: { $exists: true, $size: { $gt: 3 } } })
+```
+---
+
+**Q50. Exactly 4 interview rounds**
+
+```javascript
+db.companies.find({ "interviewRounds.3": { $exists: true }, "interviewRounds.4": { $exists: false } })
+```
+---
+
+**Q51. Employee count > 2000**
+
+```javascript
+db.companies.find({ employeeCount: { $gt: 2000 } })
+```
+---
+
+**Q52. Salaries in multiples of 5**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $mod: [5, 0] } })
+```
+---
+
+**Q53. CGPA in \[6.5, 7.0, 7.5]**
+
+```javascript
+db.companies.find({ "hiringCriteria.cgpa": { $in: [6.5, 7.0, 7.5] } })
+```
+---
+
+**Q54. Companies NOT in Bangalore**
+
+```javascript
+db.companies.find({ location: { $ne: "Bangalore" } })
+```
+---
+
+**Q55. Skills ending with "Design"**
+
+```javascript
+db.companies.find({ "hiringCriteria.skills": { $regex: /Design$/ } })
+```
+---
 
