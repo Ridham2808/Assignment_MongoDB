@@ -639,3 +639,164 @@ db.companies.find({ $expr: { $lt: ["$salaryBand.bonus", { $divide: ["$salaryBand
 db.companies.find({ benefits: { $size: 2 } })
 ```
 ---
+
+**Q81. Project totalComp**
+
+```javascript
+db.companies.aggregate([
+  { $project: { name: 1, totalComp: { $add: ["$salaryBand.base", "$salaryBand.bonus", "$salaryBand.stock"] } } }
+])
+```
+---
+
+**Q82. totalComp > 45**
+
+```javascript
+db.companies.aggregate([
+  { $project: { name: 1, totalComp: { $add: ["$salaryBand.base", "$salaryBand.bonus", "$salaryBand.stock"] } } },
+  { $match: { totalComp: { $gt: 45 } } }
+])
+```
+---
+
+**Q83. Sort by totalComp**
+
+```javascript
+db.companies.aggregate([
+  { $project: { name: 1, totalComp: { $add: ["$salaryBand.base", "$salaryBand.bonus", "$salaryBand.stock"] } } },
+  { $sort: { totalComp: -1 } }
+])
+```
+
+---
+
+**Q84. Multiply stock by 2**
+
+```javascript
+db.companies.updateMany({}, { $mul: { "salaryBand.stock": 2 } })
+```
+---
+
+**Q85. Ensure bonus >= 5**
+
+```javascript
+db.companies.updateMany({}, { $max: { "salaryBand.bonus": 5 } })
+```
+---
+
+**Q86. Cap base at 35**
+
+```javascript
+db.companies.updateMany({}, { $min: { "salaryBand.base": 35 } })
+```
+---
+
+**Q87. Ensure unique WFH**
+
+```javascript
+db.companies.updateMany({}, { $addToSet: { benefits: "WFH" } })
+```
+---
+
+**Q88. Array filter → change 3rd round**
+
+```javascript
+db.companies.updateMany(
+  {},
+  { $set: { "interviewRounds.$[elem].type": "Tech Screen" } },
+  { arrayFilters: [{ "elem.round": 3 }] }
+)
+```
+---
+
+**Q89. Add currentDate**
+
+```javascript
+db.companies.updateMany({}, { $currentDate: { lastUpdated: true } })
+```
+---
+
+**Q90. Delete companies without benefits**
+
+```javascript
+db.companies.deleteMany({ benefits: { $exists: false } })
+```
+---
+
+**Q91. Upsert Tesla**
+
+```javascript
+db.companies.updateOne(
+  { name: "Tesla" },
+  { $set: { location: "Bangalore" } },
+  { upsert: true }
+)
+```
+---
+
+**Q92. Exclude salaryBand**
+
+```javascript
+db.companies.find({}, { salaryBand: 0 })
+```
+---
+
+**Q93. Project doubleStock**
+
+```javascript
+db.companies.aggregate([
+  { $project: { name: 1, doubleStock: { $multiply: ["$salaryBand.stock", 2] } } }
+])
+```
+---
+
+**Q94. Name length = 6**
+
+```javascript
+db.companies.find({ $expr: { $eq: [{ $strLenCP: "$name" }, 6] } })
+```
+---
+
+**Q95. base % 2 = 0**
+
+```javascript
+db.companies.find({ "salaryBand.base": { $mod: [2, 0] } })
+```
+---
+
+**Q96. headcount > 2000 (\$where)**
+
+```javascript
+db.companies.find({ $where: "this.employeeCount > 2000" })
+```
+---
+
+**Q97. Text search "Java"**
+(First, index on skills)
+
+```javascript
+db.companies.createIndex({ "hiringCriteria.skills": "text" })
+db.companies.find({ $text: { $search: "Java" } })
+```
+---
+
+**Q98. Case-insensitive sort**
+
+```javascript
+db.companies.find().collation({ locale: "en", strength: 2 }).sort({ name: 1 })
+```
+---
+
+**Q99. Benefits type = array**
+
+```javascript
+db.companies.find({ benefits: { $type: "array" } })
+```
+---
+
+**Q100. Benefits include "Free Meals"**
+
+```javascript
+db.companies.find({ benefits: "Free Meals" })
+```
+---
